@@ -17,8 +17,8 @@ not possible to enforce a rank of 1 on a matrix. The python script finds a solut
 ## 3. PnP via polynoms
 As shown in the (1), the problem is 4d polynomial in q=(x,y,z,w) s.t. $||q||=1$ (in quaternion representation).
 Therefore, we can try the direct approach of minimizing it, we barely can solve 4d degree polynom with one variable, so 4 variables?
-Hence, Following the [paper of  the paper of M. Osadchy and D. Keren],
-https://scholar.google.com/citations?view_op=view_citation&hl=en&user=nZEtlZoAAAAJ&sortby=pubdate&citation_for_view=nZEtlZoAAAAJ:fPk4N6BV_jEC
+Hence, Following the [paper of Prof M. Osadchy and Prof D. Keren](https://scholar.google.com/citations?view_op=view_citation&hl=en&user=nZEtlZoAAAAJ&sortby=pubdate&citation_for_view=nZEtlZoAAAAJ:fPk4N6BV_jEC)
+
 We only need to find the first $\gamma$ such that $q4(x,y,z,w)=p4(x,y,z,w)-\gamma||(x,y,z,w)||^2\geq 0$ (for any q).
 In folder (3) there is:
 - A nonconvex solver which gives pretty accurate approxmation.
@@ -36,11 +36,9 @@ In that folder you will also find an example for pnp, usually solution is close 
 However, this huristic is not practical for embedding, as the real running times should be milliseconds.
 
 ## 6. Ellipsoid method
-Following Dan Feldman[https://simons.berkeley.edu/sites/default/files/docs/9692/provable-learning-real-time-big-data-using-core-sets.pdf] slide 39
-It is possible to approximate the 4d polynom, using the fact that $p4=||r4||^2$, the squared norm 2 of another function.
+Following [Prof Dan Feldman](https://simons.berkeley.edu/sites/default/files/docs/9692/provable-learning-real-time-big-data-using-core-sets.pdf), slide 39, it is possible to approximate the 4d polynom, using the fact that $p4=||r4||^2$, the squared norm 2 of another function.
 Using John's ellipsoid, can upper bound the norm above and below, but it's not the best solution.
-Murda's amazing source code tries to do that, but I failed to make this practical for the problem.
-https://github.com/muradtuk/LzModelCompression
+Murda's amazing [research](https://github.com/muradtuk/LzModelCompression) tries to do that, but I failed to make this practical for the problem.
 
 ## 7. PnP via Geometric programming
 Another approach to deal with the PnP problem might be using GP. In general GP is an approach for
@@ -57,7 +55,7 @@ is hidden in the proof of Boyd for strong duality.
 ## 9. L1 optimaization relaxation
 Tried similar approach of "subconvex" for the open problem of L1 optimization. 
 The paper gives a correct algorithm for maximization problem. However, for the minimization problem its incorrect.
-A counter example here: https://www.desmos.com/3d/66d5bc932e
+A counter example [here](https://www.desmos.com/3d/66d5bc932e)
 
 ## 10. Appendix
 A paper shows how to convert the rank=1 constrain of a matrix to a SDP problem.
