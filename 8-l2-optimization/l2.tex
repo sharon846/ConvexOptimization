@@ -1,0 +1,124 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{diagbox}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{comment}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{soul}
+\usepackage{hyperref}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{parskip}
+\usepackage{tikz}
+\usepackage{setspace}
+\usepackage{graphicx}
+
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\newcommand{\sharon}[1]{{\footnotesize \bf\color{blue} Sharon: #1}}
+\newcommand{\dan}[1]{{\footnotesize \bf\color{brown} Dan: #1}}
+\newcommand{\norm}[1]{\lVert #1 \rVert}
+\newcommand{\double}[1]{\mathbb{#1}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\relpenalty=99999
+\binoppenalty=99999
+
+
+\title{Norm 2 optimization under unit vectors}
+\begin{document}
+\author{Sharon Rotgaizer}
+\maketitle
+
+
+It is relatively easy to optimize convex functions without any constraints, but in CS, we need many times to solve problems using the constraint of $\norm{x}=1$. We will see how to solve two fundametal problems.
+
+\section{simple case}
+Let $x\in\double{R}^2$, $A\in\double{R}^{n\times 2}$, $b\in\double{R}^2$ and $f(x)=\norm{Ax-b}_2^2$. Our problem is:
+\[\min_{\norm{x}=1} f(x)=\min_{\norm{x}=1} \norm{Ax-b}_2^2=\min_{\norm{x}=1} \sum_{i=1}^n (A_{i1}x_1+A_{i2}x_2-b_i)^2\]
+
+Using polar representation, we get rid of $\norm{x}=1$ by choosing $x_1\leftarrow \cos(x)$, $x_2\leftarrow \sin(x)$.
+\[\min_{\norm{x}=1} f(x)=\min_x \sum_{i=1}^n (A_{i1}\cos(x)+A_{i2}\sin(x)-b_i)^2\]
+
+Lets derive!
+\[f'(x)=2\sum_{i=1}^n (A_{i1}\cos(x)+A_{i2}\sin(x)-b_i)(A_{i2}\cos(x)-A_{i1}\sin(x))=0\]
+For each inner expression:
+\begin{eqnarray*}
+    E&=&(A_{i1}\cos(x)+A_{i2}\sin(x)-b_i)(A_{i2}\cos(x)-A_{i1}\sin(x))\\
+    &=&A_{i1}A_{i2}\cos(2x)+0.5(A_{i2}^2-A_{i1}^2)\sin(2x)-A_{i2}b_1\cos(x)-A_{i1}b_i\sin(x)
+\end{eqnarray*}
+And totally:
+\[f'(x)=\cos(2x)\sum_{i=1}^n A_{i1}A_{i2}+0.5\sin(2x)\sum_{i=1}^n (A_{i2}^2-A_{i1}^2)-\cos(x)\sum_{i=1}^n A_{i2}b_i-\sin(x)\sum_{i=1}^n A_{i1}b_i\]
+Denote the following:
+\[\begin{matrix}
+    A=\frac{1}{2}\sum_{i=1}^n A_{i1}A_{i2} && B=\frac{1}{4i}\sum_{i=1}^n (A_{i2}^2-A_{i1}^2) && C=\frac{1}{2}\sum_{i=1}^n A_{i2}b_i&& D=\frac{1}{2i}\sum_{i=1}^n A_{i1}b_i
+\end{matrix}\]
+And using Euler expressions, we get:
+\[f'(x)=A(e^{2ix}+e^{-2ix})+B(e^{2ix}-e^{-2ix})-C(e^{ix}+e^{-ix})+D(e^{ix}-e^{-ix})=0\]
+
+Let $\theta\leftarrow e^{ix}$, we are left with 
+\[\theta^4 (A+B)+\theta^3 (D-C) -\theta (C+D) + (A-B)=0\]
+This gives ap to four solutions and once filtering solutions which are not on the unit vectors, solution to $x$ will be the real and imaginary coordinated of $\theta_i=\text{cis}(x)$.
+
+\newpage
+
+\section{general case - short method}
+
+Let $x\in\double{R}^d, A\in\double{R}^{n\times d}, b\in\double{R}^d$, and $f(x)=\norm{Ax-b}_2^2$. Our problem is:
+\[\min_{\norm{x}=1} f(x)=\min_{\norm{x}=1} \norm{Ax-b}_2^2=\min_{\norm{x}=1} x^\top A^\top A x - 2Ab^\top x+b^\top b\]
+
+Denote $A_0=A^\top A$, $b_0=-A^\top b$, $c_0=b^\top b$, rewrite the problem to:
+\[\min_{\norm{x}=1} x^\top A_0 x + 2 b_0^\top x + c_0 \]
+The Lagrangian is:
+\[L(x,\lambda)=\norm{Ax-b}_2^2+\lambda(x^\top x-1)=x^\top(A_0+\lambda I)x+2b_0^\top x + (c_0-1\cdot \lambda)\]
+and the dual function is:
+\begin{eqnarray*}
+    g(\lambda)&=&\inf_x L(x,\lambda) \\
+    &=&\begin{cases}
+        c_0 - \lambda - b_0^\top (A_0+\lambda I)^\top b_0 & A_0 + \lambda I \succeq 0, b_0 \in R(A_0+\lambda I) \\
+        -\infty & \text{otherwise}
+    \end{cases}
+\end{eqnarray*}
+
+Using a Schur complement, we can express the dual problem as:
+\begin{center}
+    \text{maximize} $\gamma$\\
+    \text{subject to}  $\lambda \geq 0$
+\end{center}
+\[\left[\begin{matrix}
+    A_0 + \lambda I & b_0 \\ 
+    b_0^\top & c_0 - \lambda - \gamma 
+\end{matrix} \right]\succeq 0\]
+an SDP with two variables $\gamma, \lambda \in \double{R}$.
+Boyd proves also strong duality.
+\newpage
+\section{general case - long method}
+
+Let $x\in\double{R}^d, A\in\double{R}^{n\times d}, b\in\double{R}^d$, and $f(x)=\norm{Ax-b}_2^2$. Our problem is:
+\[\min_{\norm{x}=1} f(x)=\min_{\norm{x}=1} \norm{Ax-b}_2^2\]
+From the definition, note that:
+\[f(x)=\sum_{i=1}^n (A_{i*}^\top x-b_i)^2\]
+
+We now partition $\double{R}^d$ into $2^d$ subspace in the following method, by covering all the options.
+\[\double{R}^d=\bigcup_{c\in\{-1,1\}^d} \{x: (Ax-b)\circ c\geq 0_d\}= \bigcup_{c\in\{-1,1\}^d} \{x: \forall i: (A_{i*}x-b_i)c_i \geq 0\}\]
+
+Denote $S_c:=\{x: (Ax-b)\circ c\geq 0_d\}$, So $\double{R}^d=\cup_{c\in\{-1,1\}^d} S_c$. We can express $Im(f)$ by:
+\[f(\double{R}^d)=\bigcup_{c\in\{-1,1\}^d} f(S_c)\]
+This formally implies that $f$ is union of $2^d$ parabolas and the constraint of $\norm{x}=1$ won't change it.
+
+Lets look back at the definition of $f$. The sign of $A_{i*}x-b_i$ may not affect the outcome, but under the constraint $\norm{x}=1$, for each possible case there is different set of values on the unit vector and hence, $2^d$ different parabolas. Using the decomposition of $f$ to those $2^d$ subspace, we can solve each subspace separately, since $f(S_c)$ is still a parabola. Moreover, it is a convex hull, and thus we can solve the problem under $\norm{x}\leq 1$. \\
+
+The algorithm is:
+\begin{itemize}
+    \item For each $c\in\{-1,1\}^d$, get $m_c=\min_{\norm{x}=1}\{f(x): f\in S_c\}$.
+\end{itemize}
+So, $\min_{\norm{x}=1} \norm{Ax-b}_2^2=\min_c \{m_c\}$. The same can be applied to max.
+
+\newpage
+
+\end{document}
