@@ -47,7 +47,7 @@ This approach required more research, since in the folder there is only the star
 
 ## 8. L2 optimaization relaxation
 Leaving PnP, focus on minimizing $||Ax-b||_2^2$ such that $||x||=1$. 
-- The 'R2' paper formulates the simple case for $x\in\mathbb{R}^2. The python script exectues that algorithm.
+- The 'R2' paper formulates the simple case for $x\in\mathbb{R}^2$. The python script exectues that algorithm.
 - The 'SDP' paper gives pretty easy solution, based on Boyd appendix B. Implementation included.
 - Another convex approach using "subconvex" problems on the original problem. The true reason for this approach to work
 is hidden in the proof of Boyd for strong duality.
