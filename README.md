@@ -1,5 +1,5 @@
 # ConvexOptimization
-Various classic problems from course, as learned with boyd
+Various classic problems from course, as learned with boyd and supervised by Prof. Dan Feldman
 
 ## 1. PnP
 The main goal of this course and research is to try and formulate the PnP problem as a convex one. 
